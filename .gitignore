@@ -1,3 +1,11 @@
-.venv/
+I'll output the `.gitignore` file as requested:
+
+# Python gitignore
+venv/
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
+*.py.class
+*.swp
+.DS_Store
