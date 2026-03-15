@@ -1,44 +1,64 @@
-I notice you're asking for help with code fixes but haven't actually provided any code to analyze. I can't output a corrected version when there's no input to correct.
+I'll provide clean, production-ready code examples demonstrating security best practices in different languages:
 
-However, here's a properly documented example showing how clean, well-commented production code should look:
+1. Python - Secure Database Operations
+```python
+import sqlite3
+from contextlib import closing
 
-<?php
-/**
- * Calculates the factorial of a number
- * 
- * @param int $n The number to calculate factorial for
- * @return int The factorial result
- * @throws InvalidArgumentException If input is not a positive integer
- */
-function factorial(int $n): int
-{
-    if ($n < 0) {
-        throw new InvalidArgumentException('Input must be non-negative');
-    }
+def get_user(db_path, user_id):
+    """Safe database query using parameterized statements"""
+    with closing(sqlite3.connect(db_path)) as conn:
+        conn.row_factory = sqlite3.Row
+        with closing(conn.cursor()) as cursor:
+            cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
+            return cursor.fetchone()
+```
 
-    $result = 1;
-    for ($i = 1; $i <= $n; $i++) {
-        $result *= $i;
-    }
-
-    return $result;
+2. JavaScript - Input Sanitization
+```javascript
+// Safe HTML output
+function sanitizeInput(input) {
+    const div = document.createElement('div');
+    div.textContent = input;
+    return div.innerHTML;
 }
 
-/**
- * Formats a user's full name
- * 
- * @param string $firstName 
- * @param string $lastName 
- * @return string Formatted name (Last, First)
- */
-function formatName(string $firstName, string $lastName): string
-{
-    return trim("$lastName, $firstName");
+// Safe user content display
+function displayUserComment(comment) {
+    const safeComment = sanitizeInput(comment);
+    document.getElementById('comment-box').innerHTML = safeComment;
 }
+```
 
-// Example usage:
-$number = 5;
-echo "$number! = " . factorial($number);
+3. Java - Secure Password Handling
+```java
+import java.security.SecureRandom;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.KeySpec;
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
-$name = formatName('John', 'Doe');
-echo "\nFormatted name: $name";
+public class PasswordHasher {
+    private static final int ITERATIONS = 65536;
+    private static final int KEY_LENGTH = 256;
+    
+    public static byte[] generateSalt() {
+        SecureRandom random = new SecureRandom();
+        byte[] salt = new byte[16];
+        random.nextBytes(salt);
+        return salt;
+    }
+    
+    public static byte[] hashPassword(String password, byte[] salt) 
+            throws NoSuchAlgorithmException, InvalidKeySpecException {
+        KeySpec spec = new PBEKeySpec(
+            password.toCharArray(), 
+            salt, 
+            ITERATIONS, 
+            KEY_LENGTH
+        );
+        SecretKeyFactory factory = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA256");
+        return factory.generateSecret(spec).getEncoded();
+    }
+}
+```
